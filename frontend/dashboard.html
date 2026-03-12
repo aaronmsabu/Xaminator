@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Xaminator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ===================== Sidebar ===================== -->
+  <nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <span class="logo-icon">📋</span>
+      <span class="logo-text">Xaminator</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a></li>
+      <li><a href="students.html"><span class="nav-icon">👥</span> Students</a></li>
+      <li><a href="halls.html"   ><span class="nav-icon">🏛️</span> Exam Halls</a></li>
+      <li><a href="exams.html"   ><span class="nav-icon">📝</span> Exams</a></li>
+      <li><a href="seating.html" ><span class="nav-icon">💺</span> Seating</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html" class="logout-btn" id="logout-btn">
+        <span>🚪</span> Logout
+      </a>
+    </div>
+  </nav>
+
+  <!-- ===================== Main ===================== -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Welcome to Xaminator — Exam Seat Arrangement System</p>
+      </div>
+      <a href="seating.html" class="btn btn-primary">💺 Generate Seating</a>
+    </div>
+
+    <div class="page-body">
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">👥</div>
+          <div>
+            <div class="stat-value" id="stat-students">—</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">🏛️</div>
+          <div>
+            <div class="stat-value" id="stat-halls">—</div>
+            <div class="stat-label">Active Halls</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple">📝</div>
+          <div>
+            <div class="stat-value" id="stat-exams">—</div>
+            <div class="stat-label">Total Exams</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">🗓️</div>
+          <div>
+            <div class="stat-value" id="stat-scheduled">—</div>
+            <div class="stat-label">Scheduled Exams</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-column: departments + recent exams -->
+      <div class="two-col">
+
+        <!-- Departments -->
+        <div class="card">
+          <div class="card-header">🏷️ Departments</div>
+          <div class="card-body">
+            <p class="section-title">Add Department</p>
+            <form id="add-dept-form" novalidate>
+              <div class="form-group">
+                <label for="dept-name">Name</label>
+                <input id="dept-name" type="text" placeholder="e.g. Computer Science">
+              </div>
+              <div class="form-group">
+                <label for="dept-code">Code</label>
+                <input id="dept-code" type="text" placeholder="e.g. CSE" maxlength="20"
+                       style="text-transform:uppercase;">
+              </div>
+              <button type="submit" class="btn btn-primary btn-full">
+                + Add Department
+              </button>
+            </form>
+
+            <div class="mt-4">
+              <p class="section-title">Existing Departments</p>
+              <div id="dept-list" class="text-muted">
+                <span class="spinner spinner-dark"></span> Loading…
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Exams -->
+        <div class="card">
+          <div class="card-header flex-between">
+            <span>📅 Recent Exams</span>
+            <a href="exams.html" class="btn btn-secondary btn-sm">View All</a>
+          </div>
+          <div class="table-wrapper">
+            <table id="recent-exams-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Date</th>
+                  <th>Year</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="loading-row">
+                  <td colspan="5"><span class="spinner spinner-dark"></span> Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /two-col -->
+    </div><!-- /page-body -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<div id="toast-container" aria-live="polite"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/dashboard.js"></script>
+<script>
+  // Guard — redirect to login if not authenticated
+  if (sessionStorage.getItem('xaminator_auth') !== '1') location.replace('index.html');
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.removeItem('xaminator_auth');
+  });
+</script>
+</body>
+</html>

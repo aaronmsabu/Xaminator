@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Xaminator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-page">
+
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="logo-mark">📋</span>
+      <h1>Xaminator</h1>
+      <p>Exam Seat Arrangement System</p>
+    </div>
+
+    <form id="login-form" autocomplete="on" novalidate>
+      <div id="login-error" class="login-error" role="alert"></div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="admin"
+               autocomplete="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••"
+               autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">
+        Login
+      </button>
+    </form>
+
+    <p class="text-muted mt-4" style="text-align:center;">
+      Xaminator v1.0 &nbsp;·&nbsp; Admin Panel
+    </p>
+  </div>
+
+  <script>
+    // Redirect to dashboard if already logged in
+    if (sessionStorage.getItem('xaminator_auth') === '1') {
+      location.replace('dashboard.html');
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errEl    = document.getElementById('login-error');
+
+      errEl.style.display = 'none';
+      errEl.textContent   = '';
+
+      if (!username || !password) {
+        errEl.textContent   = 'Please enter both username and password.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      // Placeholder auth — swap for a real JWT /login API call when backend auth is added.
+      if (username === 'admin' && password === 'admin') {
+        sessionStorage.setItem('xaminator_auth', '1');
+        location.href = 'dashboard.html';
+      } else {
+        errEl.textContent   = 'Invalid credentials. Default: admin / admin';
+        errEl.style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>

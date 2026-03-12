@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seating — Xaminator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ===================== Sidebar ===================== -->
+  <nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <span class="logo-icon">📋</span>
+      <span class="logo-text">Xaminator</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a></li>
+      <li><a href="students.html"><span class="nav-icon">👥</span> Students</a></li>
+      <li><a href="halls.html"   ><span class="nav-icon">🏛️</span> Exam Halls</a></li>
+      <li><a href="exams.html"   ><span class="nav-icon">📝</span> Exams</a></li>
+      <li><a href="seating.html" ><span class="nav-icon">💺</span> Seating</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html" class="logout-btn" id="logout-btn"><span>🚪</span> Logout</a>
+    </div>
+  </nav>
+
+  <!-- ===================== Main ===================== -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div>
+        <h1>Seat Allocation</h1>
+        <p>Generate and view exam seating arrangements</p>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- Controls -->
+      <div class="card mb-4" style="margin-bottom:22px;">
+        <div class="card-body">
+          <div class="select-bar">
+            <div class="form-group">
+              <label for="seating-exam">Select Exam</label>
+              <select id="seating-exam">
+                <option value="">— Choose an exam —</option>
+              </select>
+            </div>
+            <button id="generate-btn" class="btn btn-success">
+              ⚙️ Generate Seating
+            </button>
+          </div>
+          <p class="seating-meta" id="seating-meta"></p>
+        </div>
+      </div>
+
+      <!-- Seating Table -->
+      <div class="card">
+        <div class="card-header">💺 Seating Arrangement</div>
+        <div class="table-wrapper">
+          <table id="seating-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Hall</th>
+                <th>Seat No.</th>
+                <th>Student Name</th>
+                <th>Register Number</th>
+                <th>Department</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="empty-row">
+                <td colspan="6">Select an exam above to view or generate seating.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /page-body -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<div id="toast-container" aria-live="polite"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/seating.js"></script>
+<script>
+  if (sessionStorage.getItem('xaminator_auth') !== '1') location.replace('index.html');
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.removeItem('xaminator_auth');
+  });
+</script>
+</body>
+</html>

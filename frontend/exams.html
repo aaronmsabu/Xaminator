@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exams — Xaminator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ===================== Sidebar ===================== -->
+  <nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <span class="logo-icon">📋</span>
+      <span class="logo-text">Xaminator</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a></li>
+      <li><a href="students.html"><span class="nav-icon">👥</span> Students</a></li>
+      <li><a href="halls.html"   ><span class="nav-icon">🏛️</span> Exam Halls</a></li>
+      <li><a href="exams.html"   ><span class="nav-icon">📝</span> Exams</a></li>
+      <li><a href="seating.html" ><span class="nav-icon">💺</span> Seating</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html" class="logout-btn" id="logout-btn"><span>🚪</span> Logout</a>
+    </div>
+  </nav>
+
+  <!-- ===================== Main ===================== -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div>
+        <h1>Exams</h1>
+        <p>Schedule and manage exams</p>
+      </div>
+      <a href="seating.html" class="btn btn-success">💺 Manage Seating</a>
+    </div>
+
+    <div class="page-body">
+      <div class="two-col">
+
+        <!-- Create Exam Form -->
+        <div class="card">
+          <div class="card-header">➕ Create Exam</div>
+          <div class="card-body">
+            <form id="add-exam-form" novalidate>
+
+              <div class="form-group">
+                <label for="exam-title">Title *</label>
+                <input id="exam-title" type="text" placeholder="e.g. Data Structures End Semester">
+              </div>
+
+              <div class="form-group">
+                <label for="exam-date">Exam Date *</label>
+                <input id="exam-date" type="date">
+              </div>
+
+              <div class="form-group">
+                <label for="exam-start">Start Time *</label>
+                <input id="exam-start" type="time">
+              </div>
+
+              <div class="form-group">
+                <label for="exam-end">End Time *</label>
+                <input id="exam-end" type="time">
+              </div>
+
+              <div class="form-group">
+                <label for="exam-year">Academic Year *</label>
+                <input id="exam-year" type="text" placeholder="e.g. 2025-26" maxlength="20">
+              </div>
+
+              <div class="form-group">
+                <label for="exam-sem">Semester *</label>
+                <input id="exam-sem" type="number" placeholder="1–12" min="1" max="12">
+              </div>
+
+              <div class="form-group">
+                <label for="exam-dept">Department (optional)</label>
+                <select id="exam-dept">
+                  <option value="">— All Departments —</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-full">
+                Create Exam
+              </button>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- Exams Table -->
+        <div class="card">
+          <div class="card-header">📝 All Exams</div>
+          <div class="table-wrapper">
+            <table id="exams-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Department</th>
+                  <th>Semester</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="loading-row">
+                  <td colspan="7"><span class="spinner spinner-dark"></span> Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /two-col -->
+    </div><!-- /page-body -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<div id="toast-container" aria-live="polite"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/exams.js"></script>
+<script>
+  if (sessionStorage.getItem('xaminator_auth') !== '1') location.replace('index.html');
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.removeItem('xaminator_auth');
+  });
+</script>
+</body>
+</html>

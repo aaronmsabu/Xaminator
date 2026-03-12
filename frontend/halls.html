@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Halls — Xaminator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ===================== Sidebar ===================== -->
+  <nav class="sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <span class="logo-icon">📋</span>
+      <span class="logo-text">Xaminator</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a></li>
+      <li><a href="students.html"><span class="nav-icon">👥</span> Students</a></li>
+      <li><a href="halls.html"   ><span class="nav-icon">🏛️</span> Exam Halls</a></li>
+      <li><a href="exams.html"   ><span class="nav-icon">📝</span> Exams</a></li>
+      <li><a href="seating.html" ><span class="nav-icon">💺</span> Seating</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="index.html" class="logout-btn" id="logout-btn"><span>🚪</span> Logout</a>
+    </div>
+  </nav>
+
+  <!-- ===================== Main ===================== -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div>
+        <h1>Exam Halls</h1>
+        <p>Add and manage exam hall capacity</p>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="two-col">
+
+        <!-- Add Hall Form -->
+        <div class="card">
+          <div class="card-header">➕ Add Exam Hall</div>
+          <div class="card-body">
+            <form id="add-hall-form" novalidate>
+
+              <div class="form-group">
+                <label for="hall-name">Hall Name *</label>
+                <input id="hall-name" type="text" placeholder="e.g. Hall A">
+              </div>
+
+              <div class="form-group">
+                <label for="hall-block">Block (optional)</label>
+                <input id="hall-block" type="text" placeholder="e.g. Main Block">
+              </div>
+
+              <div class="form-group">
+                <label for="hall-floor">Floor (optional)</label>
+                <input id="hall-floor" type="number" placeholder="e.g. 1" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="hall-capacity">Capacity *</label>
+                <input id="hall-capacity" type="number" placeholder="e.g. 40" min="1">
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-full">
+                Add Hall
+              </button>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- Halls Table -->
+        <div class="card">
+          <div class="card-header">🏛️ All Exam Halls</div>
+          <div class="table-wrapper">
+            <table id="halls-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Hall Name</th>
+                  <th>Block</th>
+                  <th>Floor</th>
+                  <th>Capacity</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="loading-row">
+                  <td colspan="7"><span class="spinner spinner-dark"></span> Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /two-col -->
+    </div><!-- /page-body -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<div id="toast-container" aria-live="polite"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/halls.js"></script>
+<script>
+  if (sessionStorage.getItem('xaminator_auth') !== '1') location.replace('index.html');
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.removeItem('xaminator_auth');
+  });
+</script>
+</body>
+</html>
