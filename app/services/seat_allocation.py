@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models.exam import Exam
 from app.models.exam_hall import ExamHall
+from app.models.exam_hall_availability import ExamHallAvailability
 from app.models.seat_allocation import SeatAllocation
 from app.models.student import Student
 
@@ -42,7 +43,10 @@ def generate_seating(exam_id: int, db: Session) -> List[SeatAllocation]:
 
     - Fetches all active students matching the exam's semester (and department
       if the exam is department-specific).
-    - Distributes students across active halls in round-robin department order.
+    - Uses only halls that are:
+      a) Globally active (is_active=True)
+      b) Available for this exam (no ExamHallAvailability record with is_available=False)
+    - Distributes students across halls in round-robin department order.
     - Seat numbers are sequential (1-based) within each hall.
     - Any existing allocations for the exam are replaced atomically.
 
@@ -63,14 +67,22 @@ def generate_seating(exam_id: int, db: Session) -> List[SeatAllocation]:
     if not students:
         raise ValueError("No active students found matching this exam's criteria")
 
-    halls = (
-        db.query(ExamHall)
-        .filter(ExamHall.is_active == True)  # noqa: E712
-        .order_by(ExamHall.id)
-        .all()
-    )
+    # Get unavailable hall IDs for this exam
+    unavailable_halls = db.query(ExamHallAvailability.hall_id).filter(
+        ExamHallAvailability.exam_id == exam_id,
+        ExamHallAvailability.is_available == False,  # noqa: E712
+    ).all()
+    unavailable_hall_ids = {row[0] for row in unavailable_halls}
+
+    # Get all active halls, excluding those marked unavailable for this exam
+    halls_q = db.query(ExamHall).filter(
+        ExamHall.is_active == True,  # noqa: E712
+    ).order_by(ExamHall.id)
+    
+    halls = [h for h in halls_q.all() if h.id not in unavailable_hall_ids]
+    
     if not halls:
-        raise ValueError("No active exam halls are available")
+        raise ValueError("No available exam halls for this exam")
 
     total_capacity = sum(h.capacity for h in halls)
     if len(students) > total_capacity:

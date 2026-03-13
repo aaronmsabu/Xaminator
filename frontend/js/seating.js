@@ -5,8 +5,18 @@
 document.addEventListener('DOMContentLoaded', async () => {
   await loadExamOptions();
   setupGenerateButton();
+  setupExportButton();
   setupExamSelect();
   clearSeatingTable();
+  
+  // Check for exam parameter in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const examId = urlParams.get('exam');
+  if (examId) {
+    const select = document.getElementById('seating-exam');
+    select.value = examId;
+    loadSeating(parseInt(examId));
+  }
 });
 
 // ============================================================
@@ -39,10 +49,47 @@ async function loadExamOptions() {
 // ============================================================
 function setupExamSelect() {
   const select = document.getElementById('seating-exam');
+  const exportBtn = document.getElementById('export-btn');
+  
   select.addEventListener('change', () => {
     const id = parseInt(select.value);
-    if (id) loadSeating(id);
-    else clearSeatingTable();
+    if (id) {
+      loadSeating(id);
+      exportBtn.disabled = false;
+    } else {
+      clearSeatingTable();
+      exportBtn.disabled = true;
+    }
+  });
+}
+
+// ============================================================
+// Export to Excel button
+// ============================================================
+function setupExportButton() {
+  const btn = document.getElementById('export-btn');
+  btn.addEventListener('click', async () => {
+    const examId = parseInt(document.getElementById('seating-exam').value);
+    if (!examId) {
+      showToast('Please select an exam first.', 'info');
+      return;
+    }
+    
+    setButtonLoading(btn, true);
+    try {
+      // Get exam title for filename
+      const select = document.getElementById('seating-exam');
+      const selectedOption = select.options[select.selectedIndex];
+      const examTitle = selectedOption.textContent.split('—')[0].trim().replace(/\s+/g, '_');
+      const filename = `seating_${examTitle}.xlsx`;
+      
+      await SeatingAPI.exportExcel(examId, filename);
+      showToast('Excel file downloaded!', 'success');
+    } catch (err) {
+      showToast('Failed to export: ' + err.message, 'error');
+    } finally {
+      setButtonLoading(btn, false);
+    }
   });
 }
 
@@ -78,6 +125,7 @@ function setupGenerateButton() {
 async function loadSeating(examId) {
   const tbody  = document.querySelector('#seating-table tbody');
   const metaEl = document.getElementById('seating-meta');
+  const exportBtn = document.getElementById('export-btn');
   renderLoadingRow(tbody, 6);
   metaEl.textContent = '';
 
@@ -87,8 +135,11 @@ async function loadSeating(examId) {
 
     if (!data.allocations.length) {
       renderEmptyRow(tbody, 6, 'No seating generated yet. Click "Generate Seating" above.');
+      exportBtn.disabled = true;
       return;
     }
+    
+    exportBtn.disabled = false;
     tbody.innerHTML = data.allocations.map((row, i) => `
       <tr>
         <td>${i + 1}</td>
@@ -101,6 +152,7 @@ async function loadSeating(examId) {
   } catch (_) {
     renderEmptyRow(tbody, 6, 'No seating data yet for this exam.');
     document.getElementById('seating-meta').textContent = '';
+    exportBtn.disabled = true;
   }
 }
 
