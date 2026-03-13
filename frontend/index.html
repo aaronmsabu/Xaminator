@@ -4,13 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login — Xaminator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="login-page">
 
   <div class="login-card">
     <div class="login-logo">
-      <span class="logo-mark">📋</span>
+      <div class="logo-mark">X</div>
       <h1>Xaminator</h1>
       <p>Exam Seat Arrangement System</p>
     </div>
@@ -20,23 +23,23 @@
 
       <div class="form-group">
         <label for="username">Username</label>
-        <input id="username" type="text" placeholder="admin"
+        <input id="username" type="text" placeholder="Enter your username"
                autocomplete="username" required>
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" type="password" placeholder="••••••••"
+        <input id="password" type="password" placeholder="Enter your password"
                autocomplete="current-password" required>
       </div>
 
       <button type="submit" class="btn btn-primary btn-full" id="login-btn">
-        Login
+        Sign in
       </button>
     </form>
 
-    <p class="text-muted mt-4" style="text-align:center;">
-      Xaminator v1.0 &nbsp;·&nbsp; Admin Panel
+    <p class="text-muted mt-4" style="text-align:center; font-size: 11px;">
+      Xaminator v1.0
     </p>
   </div>
 
@@ -66,7 +69,7 @@
       // Disable button and show loading state
       loginBtn.disabled = true;
       const originalText = loginBtn.innerHTML;
-      loginBtn.innerHTML = 'Logging in...';
+      loginBtn.innerHTML = '<span class="spinner"></span> Signing in...';
 
       try {
         await AuthAPI.login(username, password);

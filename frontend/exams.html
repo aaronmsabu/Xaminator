@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Exams — Xaminator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -13,19 +16,19 @@
   <!-- ===================== Sidebar ===================== -->
   <nav class="sidebar" aria-label="Main navigation">
     <div class="sidebar-logo">
-      <span class="logo-icon">📋</span>
+      <div class="logo-icon">X</div>
       <span class="logo-text">Xaminator</span>
     </div>
     <ul class="nav-links">
-      <li><a href="dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a></li>
-      <li><a href="students.html"><span class="nav-icon">👥</span> Students</a></li>
-      <li><a href="halls.html"   ><span class="nav-icon">🏛️</span> Exam Halls</a></li>
-      <li><a href="exams.html"   ><span class="nav-icon">📝</span> Exams</a></li>
-      <li><a href="seating.html" ><span class="nav-icon">💺</span> Seating</a></li>
-      <li><a href="arrange.html" ><span class="nav-icon">🧙</span> Arrange Exam</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="students.html">Students</a></li>
+      <li><a href="halls.html">Exam Halls</a></li>
+      <li><a href="exams.html" class="active">Exams</a></li>
+      <li><a href="seating.html">Seating</a></li>
+      <li><a href="arrange.html">Arrange Exam</a></li>
     </ul>
     <div class="sidebar-footer">
-      <a href="index.html" class="logout-btn" id="logout-btn"><span>🚪</span> Logout</a>
+      <a href="index.html" class="logout-btn" id="logout-btn">Sign out</a>
     </div>
   </nav>
 
@@ -37,7 +40,7 @@
         <h1>Exams</h1>
         <p>Schedule and manage exams</p>
       </div>
-      <a href="seating.html" class="btn btn-success">💺 Manage Seating</a>
+      <a href="seating.html" class="btn btn-success">Manage Seating</a>
     </div>
 
     <div class="page-body">
@@ -45,7 +48,7 @@
 
         <!-- Create Exam Form -->
         <div class="card">
-          <div class="card-header">➕ Create Exam</div>
+          <div class="card-header">Create Exam</div>
           <div class="card-body">
             <form id="add-exam-form" novalidate>
 
@@ -95,19 +98,19 @@
             <!-- Bulk Upload Panel -->
             <div class="upload-panel" id="exam-upload-panel">
               <div class="upload-panel-header" onclick="toggleUploadPanel('exam-upload-panel')">
-                <h4>📤 Bulk Import</h4>
+                <h4>Bulk Import</h4>
                 <span class="toggle-icon">▼</span>
               </div>
               <div class="upload-panel-body">
                 <div class="upload-actions">
                   <button type="button" class="btn btn-secondary btn-sm" onclick="ExamAPI.downloadTemplate()">
-                    📥 Download Template
+                    Download Template
                   </button>
                 </div>
                 <div class="file-input-wrapper">
                   <input type="file" id="exam-file-input" accept=".csv,.xlsx">
                   <label for="exam-file-input" class="file-input-label" id="exam-file-label">
-                    📁 Choose CSV or Excel file
+Choose CSV or Excel file
                   </label>
                 </div>
                 <div class="selected-file" id="exam-selected-file"></div>
@@ -129,7 +132,7 @@
 
         <!-- Exams Table -->
         <div class="card">
-          <div class="card-header">📝 All Exams</div>
+          <div class="card-header">All Exams</div>
           <div class="table-wrapper">
             <table id="exams-table">
               <thead>
@@ -179,12 +182,12 @@
     
     if (file) {
       label.classList.add('has-file');
-      label.innerHTML = '✅ File selected';
+      label.innerHTML = 'File selected';
       selectedFile.textContent = file.name;
       uploadBtn.disabled = false;
     } else {
       label.classList.remove('has-file');
-      label.innerHTML = '📁 Choose CSV or Excel file';
+      label.innerHTML = 'Choose CSV or Excel file';
       selectedFile.textContent = '';
       uploadBtn.disabled = true;
     }
