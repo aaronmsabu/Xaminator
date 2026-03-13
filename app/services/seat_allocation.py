@@ -94,7 +94,7 @@ def generate_seating(exam_id: int, db: Session) -> List[SeatAllocation]:
                 exam_id=exam_id,
                 student_id=distributed[idx].id,
                 hall_id=hall.id,
-                seat_number=str(seat_num),
+                seat_number=seat_num,  # Now an integer, not a string
             )
             db.add(alloc)
             allocations.append(alloc)

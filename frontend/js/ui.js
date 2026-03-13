@@ -4,6 +4,32 @@
  */
 
 // ============================================================
+// Auth Guard
+// ============================================================
+
+/**
+ * Check if the user is authenticated and redirect to login if not.
+ * Call this at the top of every protected page.
+ */
+function requireAuth() {
+  if (typeof AuthAPI !== 'undefined' && !AuthAPI.isAuthenticated()) {
+    window.location.href = 'index.html';
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Logout the user and redirect to login page.
+ */
+function logout() {
+  if (typeof AuthAPI !== 'undefined') {
+    AuthAPI.logout();
+  }
+  window.location.href = 'index.html';
+}
+
+// ============================================================
 // Toast Notifications
 // ============================================================
 
@@ -145,4 +171,15 @@ function escapeHtml(str) {
 }
 
 // Run on every page load
-document.addEventListener('DOMContentLoaded', setActiveNav);
+document.addEventListener('DOMContentLoaded', () => {
+  setActiveNav();
+  
+  // Setup logout button if present
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      logout();
+    });
+  }
+});

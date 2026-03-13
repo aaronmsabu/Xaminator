@@ -30,7 +30,7 @@
                autocomplete="current-password" required>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-full">
+      <button type="submit" class="btn btn-primary btn-full" id="login-btn">
         Login
       </button>
     </form>
@@ -40,17 +40,19 @@
     </p>
   </div>
 
+  <script src="js/api.js"></script>
   <script>
     // Redirect to dashboard if already logged in
-    if (sessionStorage.getItem('xaminator_auth') === '1') {
+    if (AuthAPI.isAuthenticated()) {
       location.replace('dashboard.html');
     }
 
-    document.getElementById('login-form').addEventListener('submit', function (e) {
+    document.getElementById('login-form').addEventListener('submit', async function (e) {
       e.preventDefault();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
       const errEl    = document.getElementById('login-error');
+      const loginBtn = document.getElementById('login-btn');
 
       errEl.style.display = 'none';
       errEl.textContent   = '';
@@ -61,13 +63,20 @@
         return;
       }
 
-      // Placeholder auth — swap for a real JWT /login API call when backend auth is added.
-      if (username === 'admin' && password === 'admin') {
-        sessionStorage.setItem('xaminator_auth', '1');
+      // Disable button and show loading state
+      loginBtn.disabled = true;
+      const originalText = loginBtn.innerHTML;
+      loginBtn.innerHTML = 'Logging in...';
+
+      try {
+        await AuthAPI.login(username, password);
         location.href = 'dashboard.html';
-      } else {
-        errEl.textContent   = 'Invalid credentials. Default: admin / admin';
+      } catch (error) {
+        errEl.textContent = error.message || 'Invalid credentials. Please try again.';
         errEl.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = originalText;
       }
     });
   </script>

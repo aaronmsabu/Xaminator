@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, UniqueConstraint
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
@@ -17,7 +17,7 @@ class SeatAllocation(Base):
     hall_id = Column(
         Integer, ForeignKey("exam_halls.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    seat_number = Column(String(20), nullable=False)
+    seat_number = Column(Integer, nullable=False)  # Changed from VARCHAR to INTEGER for proper sorting
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime,

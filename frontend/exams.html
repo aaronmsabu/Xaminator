@@ -127,12 +127,9 @@
 
 <script src="js/api.js"></script>
 <script src="js/ui.js"></script>
-<script src="js/exams.js"></script>
 <script>
-  if (sessionStorage.getItem('xaminator_auth') !== '1') location.replace('index.html');
-  document.getElementById('logout-btn').addEventListener('click', () => {
-    sessionStorage.removeItem('xaminator_auth');
-  });
+  if (!requireAuth()) throw new Error('Not authenticated');
 </script>
+<script src="js/exams.js"></script>
 </body>
 </html>

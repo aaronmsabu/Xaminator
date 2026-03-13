@@ -1,6 +1,5 @@
 # Environment variables — never commit secrets
 .env
-.env.example
 # Python bytecode
 __pycache__/
 *.py[cod]

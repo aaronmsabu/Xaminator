@@ -5,18 +5,24 @@ from app.database import get_db
 from app.models.seat_allocation import SeatAllocation
 from app.models.exam import Exam
 from app.models.student import Student
+from app.models.user import User
 from app.schemas.seat_allocation import (
     GenerateSeatingRequest,
     SeatingResponse,
     SeatAllocationDetail,
 )
 from app.services.seat_allocation import generate_seating
+from app.auth import get_current_user
 
 router = APIRouter()
 
 
 @router.post("/generate-seating", status_code=status.HTTP_201_CREATED)
-def generate_seating_route(payload: GenerateSeatingRequest, db: Session = Depends(get_db)):
+def generate_seating_route(
+    payload: GenerateSeatingRequest,
+    db: Session = Depends(get_db),
+    _: User = Depends(get_current_user),
+):
     try:
         allocations = generate_seating(payload.exam_id, db)
     except ValueError as exc:
@@ -27,7 +33,11 @@ def generate_seating_route(payload: GenerateSeatingRequest, db: Session = Depend
 
 
 @router.get("/seating/{exam_id}", response_model=SeatingResponse)
-def get_seating(exam_id: int, db: Session = Depends(get_db)):
+def get_seating(
+    exam_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(get_current_user),
+):
     if not db.query(Exam).filter(Exam.id == exam_id).first():
         raise HTTPException(status_code=404, detail="Exam not found")
 
