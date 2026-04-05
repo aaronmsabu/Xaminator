@@ -46,7 +46,7 @@ def list_students(
     is_active: Optional[bool] = None,
     search: Optional[str] = None,
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 10000,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):

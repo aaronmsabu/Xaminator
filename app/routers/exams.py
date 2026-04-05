@@ -38,7 +38,7 @@ def list_exams(
     department_id: Optional[int] = None,
     semester: Optional[int] = None,
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 10000,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):

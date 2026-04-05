@@ -17,6 +17,9 @@ class Exam(Base):
     department_id = Column(
         Integer, ForeignKey("departments.id", ondelete="SET NULL"), index=True
     )
+    session_id = Column(
+        Integer, ForeignKey("exam_sessions.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     status = Column(String(20), nullable=False, default="scheduled", index=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(
@@ -27,4 +30,5 @@ class Exam(Base):
     )
 
     department = relationship("Department", back_populates="exams")
+    session = relationship("ExamSession", back_populates="exams")
     seat_allocations = relationship("SeatAllocation", back_populates="exam")

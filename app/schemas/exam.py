@@ -13,6 +13,7 @@ class ExamCreate(BaseModel):
     academic_year: str
     semester: int
     department_id: Optional[int] = None
+    session_id: Optional[int] = None
 
     @field_validator("semester")
     @classmethod
@@ -48,6 +49,7 @@ class ExamResponse(BaseModel):
     academic_year: str
     semester: int
     department_id: Optional[int]
+    session_id: Optional[int] = None
     status: str
     created_at: datetime
 

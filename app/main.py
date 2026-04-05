@@ -8,7 +8,7 @@ from app.database import engine, Base, SessionLocal
 import app.models  # noqa: F401 — registers all ORM models before create_all
 from app.models.user import User
 from app.auth import get_password_hash
-from app.routers import departments, students, exam_halls, exams, seating, auth
+from app.routers import departments, students, exam_halls, exams, seating, auth, exam_sessions
 
 
 def init_default_admin():
@@ -82,6 +82,7 @@ app.include_router(departments.router, prefix="/departments", tags=["Departments
 app.include_router(students.router, prefix="/students", tags=["Students"])
 app.include_router(exam_halls.router, prefix="/halls", tags=["Exam Halls"])
 app.include_router(exams.router, prefix="/exams", tags=["Exams"])
+app.include_router(exam_sessions.router, prefix="/sessions", tags=["Exam Sessions"])
 app.include_router(seating.router, tags=["Seat Allocation"])
 
 

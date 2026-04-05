@@ -247,11 +247,44 @@ const ExamAPI = {
 };
 
 // ============================================================
+// Exam Session API
+// ============================================================
+const ExamSessionAPI = {
+  getAll:  (params = {}) => _get('/sessions', params),
+  getById: (id)          => _get(`/sessions/${id}`),
+  create:  (data)        => _post('/sessions', data),
+};
+
+// ============================================================
 // Seating API
 // ============================================================
 const SeatingAPI = {
-  generate:   (examId) => _post('/generate-seating', { exam_id: examId }),
-  getByExam:  (examId) => _get(`/seating/${examId}`),
+  /**
+   * Generate seating for a full session (multi-batch).
+   * @param {number} sessionId
+   * @param {Array<{exam_id: number, student_ids: number[]}>} batches
+   * @param {number[]} hallIds
+   */
+  generateSession: (sessionId, batches, hallIds) =>
+    _post('/generate-seating/session', {
+      session_id: sessionId,
+      batches,
+      hall_ids: hallIds,
+    }),
+
+  /** Legacy: single-exam generate */
+  generate: (examId, studentIds = null) => _post('/generate-seating', {
+    exam_id: examId,
+    ...(studentIds && studentIds.length > 0 ? { student_ids: studentIds } : {}),
+  }),
+
+  getBySession: (sessionId) => _get(`/seating/session/${sessionId}`),
+  getByExam:    (examId)    => _get(`/seating/${examId}`),
+
+  exportExcelSession: async (sessionId, filename) => {
+    const blob = await _downloadFile(`/seating/session/${sessionId}/export/excel`);
+    downloadBlob(blob, filename || `seating_session_${sessionId}.xlsx`);
+  },
   exportExcel: async (examId, filename) => {
     const blob = await _downloadFile(`/seating/${examId}/export/excel`);
     downloadBlob(blob, filename || `seating_${examId}.xlsx`);

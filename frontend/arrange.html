@@ -76,40 +76,65 @@
             
             <div class="option-tabs">
               <button class="option-tab active" data-tab="filter-tab" onclick="switchStudentTab('filter-tab')">
-                Filter by Department & Semester
+                Filter by Batch(es)
               </button>
               <button class="option-tab" data-tab="upload-tab" onclick="switchStudentTab('upload-tab')">
                 Upload Student List
               </button>
             </div>
             
-            <!-- Filter Tab -->
+            <!-- Filter Tab: Multi-batch builder -->
             <div class="tab-content active" id="filter-tab">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="filter-dept">Department</label>
-                  <select id="filter-dept">
-                    <option value="">— All Departments —</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="filter-sem">Semester</label>
-                  <select id="filter-sem">
-                    <option value="">— All Semesters —</option>
-                    <option value="1">Semester 1</option>
-                    <option value="2">Semester 2</option>
-                    <option value="3">Semester 3</option>
-                    <option value="4">Semester 4</option>
-                    <option value="5">Semester 5</option>
-                    <option value="6">Semester 6</option>
-                    <option value="7">Semester 7</option>
-                    <option value="8">Semester 8</option>
-                  </select>
+              <p class="helper-text">Add one or more (Department + Semester) batches to include in this exam.</p>
+              
+              <!-- Batch adder row -->
+              <div class="batch-adder">
+                <div class="form-row batch-adder-row">
+                  <div class="form-group">
+                    <label for="filter-dept">Department</label>
+                    <select id="filter-dept">
+                      <option value="">— All Departments —</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="filter-sem">Semester</label>
+                    <select id="filter-sem">
+                      <option value="">— Any Semester —</option>
+                      <option value="1">Semester 1</option>
+                      <option value="2">Semester 2</option>
+                      <option value="3">Semester 3</option>
+                      <option value="4">Semester 4</option>
+                      <option value="5">Semester 5</option>
+                      <option value="6">Semester 6</option>
+                      <option value="7">Semester 7</option>
+                      <option value="8">Semester 8</option>
+                    </select>
+                  </div>
+                  <div class="form-group batch-add-btn-group">
+                    <label>&nbsp;</label>
+                    <button type="button" class="btn btn-primary" id="add-batch-btn" onclick="addBatch()">
+                      + Add Batch
+                    </button>
+                  </div>
                 </div>
               </div>
-              <button type="button" class="btn btn-secondary" onclick="countFilteredStudents()">
-                Count Students
-              </button>
+
+              <!-- Selected batches list -->
+              <div id="batch-list-wrapper" style="display: none; margin-top: 16px;">
+                <div class="batch-list-header">
+                  <span class="batch-list-title">Selected Batches</span>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="clearAllBatches()">Clear All</button>
+                </div>
+                <div id="batch-list"></div>
+              </div>
+
+              <!-- Total count preview -->
+              <div class="capacity-summary" id="student-preview" style="display: none; margin-top: 16px;">
+                <div class="capacity-item">
+                  <span class="capacity-label">Total Students:</span>
+                  <span class="capacity-value" id="student-count">0</span>
+                </div>
+              </div>
             </div>
             
             <!-- Upload Tab -->
@@ -127,13 +152,13 @@
               <button type="button" class="btn btn-secondary" onclick="parseStudentListFile()" id="parse-list-btn" disabled>
                 Parse File
               </button>
-            </div>
-            
-            <!-- Student count preview -->
-            <div class="capacity-summary" id="student-preview" style="display: none;">
-              <div class="capacity-item">
-                <span class="capacity-label">Students Selected:</span>
-                <span class="capacity-value" id="student-count">0</span>
+
+              <!-- Student count preview for upload tab -->
+              <div class="capacity-summary" id="upload-student-preview" style="display: none; margin-top: 16px;">
+                <div class="capacity-item">
+                  <span class="capacity-label">Students Found:</span>
+                  <span class="capacity-value" id="upload-student-count">0</span>
+                </div>
               </div>
             </div>
             
@@ -146,84 +171,80 @@
         </div>
       </div>
 
-      <!-- Step 2: Exam -->
+      <!-- Step 2: Session + Exams -->
       <div class="wizard-content" id="step-2" style="display: none;">
         <div class="card">
-          <div class="card-header">Step 2: Select or Create Exam</div>
+          <div class="card-header">Step 2: Set Session & Link Exams</div>
           <div class="card-body">
-            
+
             <div class="option-tabs">
-              <button class="option-tab active" data-tab="existing-exam-tab" onclick="switchExamTab('existing-exam-tab')">
-                Select Existing Exam
+              <button class="option-tab active" data-tab="session-tab" onclick="switchExamTab('session-tab')">
+                Session Details
               </button>
-              <button class="option-tab" data-tab="new-exam-tab" onclick="switchExamTab('new-exam-tab')">
-                Create New Exam
+              <button class="option-tab" data-tab="link-exams-tab" onclick="switchExamTab('link-exams-tab')">
+                Link Exams to Batches
               </button>
             </div>
-            
-            <!-- Existing Exam Tab -->
-            <div class="tab-content active" id="existing-exam-tab">
+
+            <!-- Tab 1: Session Details -->
+            <div class="tab-content active" id="session-tab">
+              <p class="helper-text">A session is the shared time-slot for all batches (same date, same halls).</p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="session-title">Session Title *</label>
+                  <input id="session-title" type="text" placeholder="e.g. Nov 2025 End Sem — Day 1">
+                </div>
+                <div class="form-group">
+                  <label for="session-date">Date *</label>
+                  <input id="session-date" type="date">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="session-start">Start Time *</label>
+                  <input id="session-start" type="time">
+                </div>
+                <div class="form-group">
+                  <label for="session-end">End Time *</label>
+                  <input id="session-end" type="time">
+                </div>
+              </div>
               <div class="form-group">
-                <label for="select-exam">Choose Exam</label>
-                <select id="select-exam">
-                  <option value="">— Select an exam —</option>
-                </select>
+                <label for="session-year">Academic Year *</label>
+                <input id="session-year" type="text" placeholder="e.g. 2025-26" maxlength="20">
               </div>
-              <div id="exam-details" style="display: none;"></div>
+              <button type="button" class="btn btn-secondary" onclick="createOrVerifySession()" id="create-session-btn">
+                Save Session Details
+              </button>
             </div>
-            
-            <!-- New Exam Tab -->
-            <div class="tab-content" id="new-exam-tab">
-              <form id="new-exam-form" novalidate>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="new-exam-title">Title *</label>
-                    <input id="new-exam-title" type="text" placeholder="e.g. Data Structures End Semester">
-                  </div>
-                  <div class="form-group">
-                    <label for="new-exam-date">Date *</label>
-                    <input id="new-exam-date" type="date">
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="new-exam-start">Start Time *</label>
-                    <input id="new-exam-start" type="time">
-                  </div>
-                  <div class="form-group">
-                    <label for="new-exam-end">End Time *</label>
-                    <input id="new-exam-end" type="time">
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="new-exam-year">Academic Year *</label>
-                    <input id="new-exam-year" type="text" placeholder="e.g. 2025-26">
-                  </div>
-                  <div class="form-group">
-                    <label for="new-exam-sem">Semester *</label>
-                    <input id="new-exam-sem" type="number" placeholder="1-12" min="1" max="12">
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-secondary">
-                  Create Exam
-                </button>
-              </form>
+
+            <!-- Tab 2: Link each batch to its exam -->
+            <div class="tab-content" id="link-exams-tab">
+              <p class="helper-text">
+                Each batch writes a different subject. Select or create the exam for each batch below.
+              </p>
+              <div id="batch-exam-linker">
+                <p class="text-muted" style="font-size:13px; color: var(--gray-400);">
+                  Add batches in Step 1 first, then come back here.
+                </p>
+              </div>
             </div>
-            
-            <!-- Selected exam info -->
-            <div class="capacity-summary" id="exam-preview" style="display: none;">
+
+            <!-- Session preview -->
+            <div class="capacity-summary" id="session-preview" style="display: none; margin-top:16px;">
               <div class="capacity-item">
-                <span class="capacity-label">Selected Exam:</span>
-                <span class="capacity-value" id="selected-exam-title">—</span>
+                <span class="capacity-label">Session:</span>
+                <span class="capacity-value" id="session-preview-title">—</span>
+              </div>
+              <div class="capacity-item">
+                <span class="capacity-label">Date:</span>
+                <span class="capacity-value" id="session-preview-date">—</span>
               </div>
             </div>
-            
+
           </div>
           <div class="card-footer flex-between">
-            <button class="btn btn-secondary" onclick="goToStep(1)">
-              ← Back
-            </button>
+            <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
             <button class="btn btn-primary" onclick="goToStep(3)" id="step2-next" disabled>
               Next: Select Halls →
             </button>

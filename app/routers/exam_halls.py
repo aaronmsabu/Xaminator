@@ -33,7 +33,7 @@ def create_hall(
 @router.get("/", response_model=List[ExamHallResponse])
 def list_halls(
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 10000,
     is_active: Optional[bool] = None,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
